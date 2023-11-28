@@ -1,34 +1,22 @@
 num_of_employees = 0  #initializes the number of employees to 0
 employees = dict()  #creates an empty dictionary that will be used to store employees later 
 
-def new_employees():  #this method adds as many employees as the user needs, but wipes all previously added employees
+def add_employees():
     global num_of_employees, employees
 
-    #resets the employee count and employees
-    employees.clear()
-    num_of_employees = 0
+    new_employees = int(input("Please enter the number of employees you want to add: "))
 
-    num_of_employees = int(input("Please enter the number of employees you want to add: "))
-    
     #iterates num_of_employees times and maps a unique employee id as a key to a list containing employee information
-    for x in range(num_of_employees):
-        employee_id = int(input("Enter the ID of employee: "))
+    for x in range(new_employees):
+        print("Enter the ID of employee. ")
+        employee_id = get_valid_int()
         name = input("Enter the name of employee: ")
-        hours_worked = int(input("Enter the hours worked for the employee: "))
+        print("Enter how many hours the Employee has worked.")
+        hours_worked = input("Enter the hours worked for the Employee: ")
         hourly_rate = float(input("Enter the hourly rate for the employee: "))
 
         employees[employee_id] = [name, hours_worked, hourly_rate]
-
-def add_employee():
-    global num_of_employees, employees
-
-    employee_id = int(input("Enter the ID of employee: "))
-    name = input("Enter the name of employee: ")
-    hours_worked = int(input("Enter the hours worked for the employee: "))
-    hourly_rate = float(input("Enter the hourly rate for the employee: "))
-
-    employees[employee_id] = [name, hours_worked, hourly_rate]
-    num_of_employees += 1
+        num_of_employees += 1
 
 def view_employees(): 
     if num_of_employees == 0:
@@ -73,17 +61,25 @@ def calculate_payroll(): #calculates payroll for employee with ID passed to the 
 def delete_employee(): #deletes an employee with the id passed as an argument
     global employees
     
+    if num_of_employees == 0:
+        print("No Employee exists yet\n")
+        return
+    
     keep_deleting = 'y'
+    delete_all = input("Would you like to delete all Employees? (y/n) ")
 
-    while keep_deleting.lower() == 'y':
-        employee_id = int(input("Enter ID of Employee to delete: "))
-        if employee_id not in employees:
-            print("That Employee does not exist. ")
-        else:
-            del employees[employee_id]
-            print(f"Employee with ID {employee_id} deleted successfully.")
+    if delete_all.lower() == 'y':
+        employees.clear()
+    else:
+        while keep_deleting.lower() == 'y':
+            employee_id = int(input("Enter ID of Employee to delete: "))
+            if employee_id not in employees:
+                print("That Employee does not exist. ")
+            else:
+                del employees[employee_id]
+                print(f"Employee with ID {employee_id} deleted successfully.")
         
-        keep_deleting = input("Would you like to keep deleting? (y/n) ")
+            keep_deleting = input("Would you like to keep deleting? (y/n) ")
 
 def adjust_salary(): #adjusts the hourly rate of as many employees as the user wants
     global employees
@@ -121,23 +117,30 @@ def search_employee():
 
         keep_searching = input("Would you like to keep searching? ")
 
+def get_valid_int():
+    str_int = input("Enter an integer: ")
+
+    while not str_int.isdigit():
+        str_int = input("That is not a valid input. Please enter a positive integer ")
+
+    return int(str_int)
+
 def main():
     print("""\t\tEmployee Management System Menu:\n
-    1. Add Employee
+    1. Add Employees
     2. View Employees
     3. Calculate Payroll (with Deductions and Benefits)
     4. Delete Employee
     5. Adjust Salary
     6. Search Employee
-    7. Add new Employees (deletes all available employees before adding new ones)
-    8. Quit """)
+    7. Quit """)
 
     while True: #creates an infinite loop
-        choice = int(input("Enter your choice (1/2/3/4/5/6/7/8): "))
+        choice = int(input("Enter your choice (1/2/3/4/5/6/7): "))
 
         #matches numbers to functions
         if choice == 1:
-            add_employee()
+            add_employees()
         elif choice == 2:
             view_employees()
         elif choice == 3:
@@ -148,9 +151,7 @@ def main():
             adjust_salary()
         elif choice == 6:
             search_employee()
-        elif choice == 7:
-            new_employees()
-        elif choice == 8: #if choice is 8, infinite loop is broken
+        elif choice == 7: #if choice is 8, infinite loop is broken
             print("Thanks for using Employee Management System Menu. Goodbye....")
             break
         else:
